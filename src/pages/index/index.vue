@@ -1,24 +1,27 @@
 <template>
 	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
-		<view>
-			<text class="title">{{title}}</text>
-		</view>
+		<Notice ref="notice" @clickChild="onClickChild" />
 	</view>
 </template>
 
 <script>
+	import Notice from '@/components/z-notice/notice.vue'
 	export default {
-		data() {
-			return {
-				title: 'Hello'
-			}
+		components: {
+			Notice
 		},
 		onLoad() {
-
+			this.$nextTick(() => {
+				this.$refs.notice.add({ message: '我是消息标题我是消息标题我是消息标题', autoHide: false })
+				setTimeout(() => {
+					this.$refs.notice.add({ message: '我是消息标题2', autoHide: false })
+				}, 1000)
+			})
 		},
 		methods: {
-
+			onClickChild(data) {
+				console.log(data)
+			}
 		}
 	}
 </script>
