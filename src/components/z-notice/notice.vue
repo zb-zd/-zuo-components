@@ -5,6 +5,8 @@
             :class="item.visible ? 'notice-show' : 'notice-hide'"
             :style="{width: item.width, marginTop: item.marginTop}"
             @click.stop="onClickNoticeItem(item)"
+            @touchstart="touchstart"
+            @touchend="touchend($event, item)"
             v-for="(item, index) in msgList" 
             :key="index"
         >
@@ -18,9 +20,13 @@
 
     export default {
         props: {
-            position: {
+            position: { // 弹出位置
                 type: String,
                 default: 'top-right' // top-left, top-right, bottom-left, bottom-right
+            },
+            autoHide: { // 自动隐藏
+                type: Boolean,
+                default: true
             }
         },
         components: {
@@ -32,27 +38,51 @@
             }
         },
         methods: {
-            add({ message = '', autoHide= true, type = 'top-right' }) {
+            add({ message = '', type = 'top-right' }) {
                 const msgList = this.msgList;
                 this.msgList.push({
                     order: msgList.length + 1,
                     message,
-                    autoHide,
                     visible: true,
                     width: `${70 - (msgList.length * 2)}vw`,
                     marginTop: `${msgList.length * 2}%`
                 })
-                if(autoHide) this.countDown(msgList.length - 1);
+                if(this.autoHide) this.countDown(msgList.length - 1)
             },
             countDown(curIndex) {
                 this.msgList[curIndex].countTime = setTimeout(() => {
                     this.msgList[curIndex].visible = false
                     clearTimeout(this.msgList[curIndex].countTime)
+                    this.delAllNotice()
                 }, 2800)
+            },
+            delAllNotice() {
+                const { autoHide, msgList } = this;
+                if(autoHide && msgList.findIndex(item => item.visible) === -1) {
+                    setTimeout(() => {
+                        this.msgList = [];
+                    }, 600)
+                }
+                
+                if(!autoHide) {
+                    setTimeout(() => {
+                        this.msgList.pop();
+                    }, 600)
+                }
+                
+            },
+            touchstart(e) {
+                this.start = e.changedTouches[0]
+            },
+            touchend(e, data) {
+                if(this.start.clientX - e.changedTouches[0].clientX < -20) {
+                    this.onClickNoticeItem(data);
+                }
             },
             onClickNoticeItem(data) {
                 data.visible = false;
                 this.$emit('clickChild', data)
+                this.delAllNotice()
             }
         }
     }
