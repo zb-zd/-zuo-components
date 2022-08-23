@@ -16,6 +16,13 @@
 </template>
 
 <script>
+    /**
+     * @Components Notice
+     * @Props autoHide: 是否自动隐藏
+     * @Function add() 向notice组件中添加消息
+     * @Desc 消息弹窗
+     */
+
     import NoticeItem from './notice-item.vue';
 
     export default {
@@ -38,7 +45,7 @@
             }
         },
         methods: {
-            add({ message = '', type = 'top-right' }) {
+            add({ message = '' }) {
                 const msgList = this.msgList;
                 this.msgList.push({
                     order: msgList.length + 1,
@@ -63,7 +70,7 @@
                         this.msgList = [];
                     }, 600)
                 }
-                
+
                 if(!autoHide) {
                     setTimeout(() => {
                         this.msgList.pop();

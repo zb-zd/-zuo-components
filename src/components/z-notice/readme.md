@@ -1,7 +1,7 @@
 # 使用方式
 ```vue
 <view>
-    <Notice ref="notice" @clickChild="onClickChild" />
+    <Notice ref="notice" :autoHide="false" @clickChild="onClickChild" />
 </view>
 <script>
     import Notice from '@/components/z-notice/notice.vue'
@@ -11,9 +11,9 @@
         },
 		onLoad() {
 			this.$nextTick(() => {
-				this.$refs.notice.add({ message: '我是消息标题我是消息标题我是消息标题', autoHide: true })
+				this.$refs.notice.add({ message: '我是消息标题我是消息标题我是消息标题' })
 				setTimeout(() => {
-					this.$refs.notice.add({ message: '我是消息标题2', autoHide: true })
+					this.$refs.notice.add({ message: '我是消息标题2' })
 				}, 1000)
 			})
 		},
